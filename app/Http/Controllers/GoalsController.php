@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Datatables;
+use App\SubGoal;
+use App\LogBook;
 use App\Goal;
+use App\User;
 
 class GoalsController extends Controller
 {
@@ -73,7 +77,10 @@ class GoalsController extends Controller
     public function show($id)
     {
         $goal = Goal::find($id);
-        return view('goals.show')->with('goal', $goal);
+        $logBooks = LogBook::where('goal_id', $id)->take(10)->get();
+        $subGoals = SubGoal::where('goal_id', $id)->take(10)->get();
+
+        return view('goals.show', ['goal' => $goal, 'logBooks' => $logBooks, 'subGoals' => $subGoals]);
     }
 
     /**
@@ -106,8 +113,38 @@ class GoalsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Goal $goal)
     {
-        //
+        $coba = $goal->subGoals->each;
+        $coba = $goal->logBooks->each;
+        // $coba = $goal->subGoals->each->steps->each;
+        // echo $goal->subGoals->get(1).steps;
+        $subGoals =  Goal::find(1)->subGoals;
+        foreach($subGoals as $subGoal){
+            echo $subGoal;
+        }
+        // dd($coba);
+        // $goal->delete();
+        // return redirect()->route('goals.index');
+    }
+
+    /**
+     * For Yajra datatables
+     */
+
+    public function getUsers(){
+        return Datatables::of(User::query())->make(true);
+    }
+
+    /**
+     * For AJAX fetching
+     */
+    public function getGoals(Request $request){
+        $id = 2;
+        $goal = Goal::find($id);
+        $logBooks = LogBook::where('goal_id', $id)->take(10)->get();
+        $subGoals = SubGoal::where('goal_id', $id)->take(10)->get();
+
+        return $logBooks->toJson();
     }
 }

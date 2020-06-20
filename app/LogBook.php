@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class LogBook extends Model
 {
-    public function user()
+    public function goal()
     {
         return $this->belongsTo('App\Goal');
     }

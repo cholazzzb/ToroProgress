@@ -15,8 +15,13 @@ class Goal extends Model
          return $this->belongsTo('App\User');
      }
 
-     public function logbooks()
+     public function logBooks()
      {
          return $this->hasMany('App\LogBook');
+     }
+
+     public function subGoals()
+     {
+         return $this->hasMany('App\SubGoal');
      }
 }

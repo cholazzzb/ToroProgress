@@ -17,7 +17,21 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::resource('/goals', 'GoalsController');
+
+// Make any other routes below Auth::routes() only accessible after authentication
 Auth::routes();
 
+Route::resource('/goals', 'GoalsController');
+
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('users', 'HomeController@getUsers')->name('get.users');
+Route::resource('/logbooks', 'LogBooksController');
+Route::resource('/subgoals', 'SubGoalsController');
+Route::resource('/steps', 'StepsController');
+
+
+// Fetch API
+Route::get('/getGoals', 'GoalsController@getGoals');
+Route::get('/getSteps', 'StepsController@getSteps');
+
+

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateLogBooksTable extends Migration
+class CreateSubGoalsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,9 @@ class CreateLogBooksTable extends Migration
      */
     public function up()
     {
-        Schema::create('log_books', function (Blueprint $table) {
+        Schema::create('sub_goals', function (Blueprint $table) {
             $table->id();
-            $table->date('date');
-            $table->string('topic');
-            $table->text('details');
-            $table->string('tags');
+            $table->string('name');
             $table->unsignedBigInteger('goal_id');
             $table->foreign('goal_id')->references('id')->on('goals');
             $table->timestamps();
@@ -32,6 +29,6 @@ class CreateLogBooksTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('log_books');
+        Schema::dropIfExists('sub_goals');
     }
 }
