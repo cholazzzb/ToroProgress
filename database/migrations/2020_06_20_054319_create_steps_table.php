@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSubGoalsTable extends Migration
+class CreateStepsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,12 @@ class CreateSubGoalsTable extends Migration
      */
     public function up()
     {
-        Schema::create('sub_goals', function (Blueprint $table) {
+        Schema::create('steps', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->unsignedBigInteger('goal_id');
-            $table->foreign('goal_id')->references('id')->on('goals');
+            $table->string('step');
+            $table->boolean('isCompleted')->default(false);
+            $table->unsignedBigInteger('objective_id');
+            $table->foreign('objective_id')->references('id')->on('objectives');
             $table->timestamps();
         });
     }
@@ -29,6 +30,6 @@ class CreateSubGoalsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sub_goals');
+        Schema::dropIfExists('steps');
     }
 }

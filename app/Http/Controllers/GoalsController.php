@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Datatables;
-use App\SubGoal;
+use App\Objective;
 use App\LogBook;
 use App\Goal;
 use App\User;
@@ -78,9 +78,9 @@ class GoalsController extends Controller
     {
         $goal = Goal::find($id);
         $logBooks = LogBook::where('goal_id', $id)->take(10)->get();
-        $subGoals = SubGoal::where('goal_id', $id)->take(10)->get();
+        $objectives = Objective::where('goal_id', $id)->take(10)->get();
 
-        return view('goals.show', ['goal' => $goal, 'logBooks' => $logBooks, 'subGoals' => $subGoals]);
+        return view('goals.show', ['goal' => $goal, 'logBooks' => $logBooks, 'objectives' => $objectives]);
     }
 
     /**
@@ -102,9 +102,10 @@ class GoalsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Goal $goal)
     {
-        //
+        $goal->update(['name' => $request->name, 'description' => $request->description]);
+        return redirect(route('goals.show', $goal->id));
     }
 
     /**
@@ -115,17 +116,31 @@ class GoalsController extends Controller
      */
     public function destroy(Goal $goal)
     {
-        $coba = $goal->subGoals->each;
-        $coba = $goal->logBooks->each;
-        // $coba = $goal->subGoals->each->steps->each;
-        // echo $goal->subGoals->get(1).steps;
-        $subGoals =  Goal::find(1)->subGoals;
-        foreach($subGoals as $subGoal){
-            echo $subGoal;
+        $objectives = $goal->objectives;
+        $logBooks = $goal->logBooks;
+
+        foreach ($logBooks as $logBook) {
+            $logBook->delete();
         }
-        // dd($coba);
-        // $goal->delete();
-        // return redirect()->route('goals.index');
+
+            // Delete all logbooks
+
+        foreach($objectives as $objective){
+            $steps =  $objective->steps;
+
+            // Delete all objectives steps
+            foreach ($steps as $step) {
+                echo $step->delete();
+            }
+    
+            // Delete all objectives
+            $objective->delete();
+        }
+
+        // Delete the goal
+        $goal->delete();
+
+        return redirect()->route('goals.index');
     }
 
     /**
@@ -134,17 +149,5 @@ class GoalsController extends Controller
 
     public function getUsers(){
         return Datatables::of(User::query())->make(true);
-    }
-
-    /**
-     * For AJAX fetching
-     */
-    public function getGoals(Request $request){
-        $id = 2;
-        $goal = Goal::find($id);
-        $logBooks = LogBook::where('goal_id', $id)->take(10)->get();
-        $subGoals = SubGoal::where('goal_id', $id)->take(10)->get();
-
-        return $logBooks->toJson();
     }
 }

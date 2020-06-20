@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Objective;
 
 class ObjectivesController extends Controller
 {
@@ -13,7 +14,7 @@ class ObjectivesController extends Controller
      */
     public function index()
     {
-        //
+        return view('objectives/index');
     }
 
     /**
@@ -21,9 +22,10 @@ class ObjectivesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $goal_id = $request->goal;
+        return view('objectives/create')->with('goal_id', $goal_id);
     }
 
     /**
@@ -34,7 +36,19 @@ class ObjectivesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'name' => 'required'
+        ]);
+
+        $goal_id = $request->goal;
+
+        // Create Data with Eloquent
+        $subGoal = new Objective;
+        $subGoal->name = $request->input('name');
+        $subGoal->goal_id = $goal_id;
+        $subGoal->save();
+
+        return redirect('goals/'.$goal_id);
     }
 
     /**
@@ -54,9 +68,9 @@ class ObjectivesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Objective $objective)
     {
-        //
+        return view('objectives.edit', ['objective' => $objective]);
     }
 
     /**
@@ -66,9 +80,11 @@ class ObjectivesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Objective $objective)
     {
-        //
+        $objective->name = $request->name;
+        $objective->save();
+        return redirect(route('goals.show', $objective->goal_id));
     }
 
     /**
@@ -77,8 +93,15 @@ class ObjectivesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Objective $objective)
     {
-        //
+        $goal_id = $objective->goal_id;
+        $steps = $objective->steps;
+        foreach ($steps as $step) {
+            $step->delete();
+        }
+        $objective->delete();
+
+        return redirect()->route('goals.show', $goal_id);
     }
 }

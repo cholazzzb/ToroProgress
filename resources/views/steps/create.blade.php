@@ -1,10 +1,10 @@
-@extends('layouts/logbooks')
+@extends('layouts/steps')
 
 @section('content-body')
 
 <div class="">
     <h1 class="text-2xl font-bold p-3">Add New Steps</h1>
-<form action="{{route('steps.store')}}?goal={{$goal_id}}&subGoal={{$subGoal_id}}" method="post">
+<form action="{{route('steps.store')}}?goal={{$goal_id}}&objective={{$objective_id}}" method="post">
         @csrf
         <div class="justify-between bg-blue-600 p-2">
             <h1 class="text-xl p-2">Step</h1>

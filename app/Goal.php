@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Goal extends Model
 {
+
+    protected $fillable = ['name', 'description'];
+
     /**
      * Relations
      */
@@ -20,8 +23,8 @@ class Goal extends Model
          return $this->hasMany('App\LogBook');
      }
 
-     public function subGoals()
+     public function objectives()
      {
-         return $this->hasMany('App\SubGoal');
+         return $this->hasMany('App\Objective');
      }
 }

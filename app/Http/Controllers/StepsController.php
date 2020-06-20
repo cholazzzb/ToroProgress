@@ -25,8 +25,8 @@ class StepsController extends Controller
     public function create(Request $request)
     {
         $goal_id = $request->goal;
-        $subGoal_id = $request->subGoal;
-        return view('steps.create', ['goal_id' => $goal_id, 'subGoal_id' => $subGoal_id]);
+        $objective_id = $request->objective;
+        return view('steps.create', ['goal_id' => $goal_id, 'objective_id' => $objective_id]);
     }
 
     /**
@@ -42,11 +42,11 @@ class StepsController extends Controller
         ]);
 
         $goal_id = $request->goal;
-        $subGoal_id = $request->subGoal;
+        $objective_id = $request->objective;
 
         $step = new Step;
         $step->step = $request->input('step');
-        $step->subGoal_id = $subGoal_id;
+        $step->objective_id = $objective_id;
         $step->isCompleted = false;
 
         $step->save();
@@ -72,9 +72,9 @@ class StepsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request, Step $step)
     {
-        return $id;
+        return view('steps.edit', ['step' => $step, 'goal_id' => $request->goal]);
     }
 
     /**
@@ -84,9 +84,11 @@ class StepsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Step $step)
     {
-        //
+        $step->step = $request->step;
+        $step->save();
+        return redirect(route('goals.show', $request->goal));
     }
 
     /**
@@ -105,12 +107,12 @@ class StepsController extends Controller
      * Fof AJAX 
      */
     public function getSteps(Request $request){
-        if ($request->subGoal == null){
+        if ($request->objective == null){
             return 'you are not passing any parameter';
         }
 
-        $subGoal_id = $request->subGoal;
-        $step = Step::where('subGoal_id', $subGoal_id)->take(10)->get();
+        $objective_id = $request->objective;
+        $step = Step::where('objective_id', $objective_id)->take(10)->get();
 
         return $step->toJson();
     }

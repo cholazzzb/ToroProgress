@@ -13,14 +13,14 @@
                 <a href="{{route('goals.edit', $goal->id)}}" class="cursor-pointer hover:bg-teal-00">
                     <i class="fas fa-edit"></i>
                 </a>
-                <i class="fas fa-trash pl-1 hover:text-red-900" 
-                    onclick="event.preventDefault();
+                <i class="fas fa-trash pl-1 hover:text-red-900" onclick="event.preventDefault();
                     if(confirm('Are you sure to delete this goal?')){
                         document.getElementById('delete-goal').submit()
                     }"></i>
-                <form style="display:none" id="delete-goal" action="{{route('goals.destroy', $goal->id)}}" method="post">
-                @csrf
-                @method('delete')
+                <form style="display:none" id="delete-goal" action="{{route('goals.destroy', $goal->id)}}"
+                    method="post">
+                    @csrf
+                    @method('delete')
                 </form>
             </h1>
             <p>Description &nbsp : &nbsp {{$goal->description}}</p>
@@ -79,15 +79,15 @@
         </div>
         <div class="flex-1 text-center m-1 bg-gray-100 shadow-xl border-2 border-purple-600">
             <h1 class="text-xl bg-purple-200 p-3 font-bold ">OBJECTIVES
-                <a href="{{route('subgoals.create')}}?goal={{$goal->id}}">
+                <a href="{{route('objectives.create')}}?goal={{$goal->id}}">
                     <i class="fas fa-plus-square pl-3"></i>
                 </a>
             </h1>
             <div class="grid grid-cols-2">
-                <div class="bg-pink-300 mt-1">
-                    <h1 class="bg-pink-200 p-1">
+                <div class="bg-pink-500 mt-1">
+                    <h1 class="bg-pink-100 p-1 text-2xl font-bold">
                         Steps <a href="{{route('steps.create')}}?goal={{$goal->id}}"
-                            onclick="location.href=this.href+'&subGoal='+subGoal_choosen;return false;">
+                            onclick="location.href=this.href+'&objective='+objective_choosen;return false;">
                             <i class="fas fa-plus-square pl-3"></i>
                         </a>
                     </h1>
@@ -101,14 +101,27 @@
                 </div>
 
                 <div class="bg-purple-300 mt-1">
-                    @if (count($subGoals) > 0)
-                    <h1 class="bg-blue-300 p-1">
-                        SubGoals
+                    @if (count($objectives) > 0)
+                    <h1 class="bg-blue-300 p-1 text-2xl font-bold">
+                        Objectives
                     </h1>
 
-                    @forelse ($subGoals as $subGoal)
-                    <button class="w-full bg-teal-200 hover:bg-purple-200 p-2" id="sub_goal_id-{{$subGoal->id}}"
-                        onclick="selectSubGoal({{$subGoal->id}})">{{$subGoal->name}}</button>
+                    @forelse ($objectives as $objective)
+                    <div class="flex">
+                        <button class="w-full bg-teal-200 hover:bg-purple-200 p-2" id="sub_goal_id-{{$objective->id}}"
+                            onclick="selectObjective({{$objective->id}})">{{$objective->name}}</button>
+                        <a href="{{route('objectives.edit', $objective->id)}}" class="p-2"> <i class="fas fa-edit hover:text-white"></i>
+                        </a>
+                    <form style="display:none" action="{{route('objectives.destroy', $objective->id)}}" id="objective-delete-{{$objective->id}}" method="post" action="{{route('objectives.destroy', $objective->id)}}">
+                            @csrf
+                            @method('delete')
+                        </form>
+                        <div class="p-2" onclick="event.preventDefault();
+                        if(confirm('Are you sure to delete {{$objective->name}} ?')){
+                        document.getElementById('objective-delete-{{$objective->id}}').submit()
+                        }"> <i class="fas fa-trash hover:text-red-600 cursor-pointer"></i>
+                        </div>
+                    </div>
                     @endforeach
 
                     @else
@@ -122,24 +135,18 @@
 
     </div>
 </div>
-<?php
-$coba = 5
-?>
 
 <script>
     // catch php variale
-    // console.log({!! json_encode($coba) !!}) 
-
-
-
+    const goal_id = ({!! json_encode($goal->id) !!}) 
 
     ///   AJAX FETCH STEP    ///
     // variable and functionfor step edit button
     const doneButton = '<i class="fas fa-check-square pr-2"></i>';
     const editButton = '<i class="fas fa-edit pl-2"></i>';
 
-    function buildEdit(index){
-        return '<a href="/steps/' + String(index) + '/edit">' + editButton+ '</a>'
+    function buildEdit(id){
+        return '<a href="/steps/' + String(id) + '/edit?goal=' + goal_id + '">' + editButton+ '</a>'
     }
 
     function buildDelete(index){
@@ -148,20 +155,21 @@ $coba = 5
 
     function buildStep(data, index){
         return '<div class="bg-pink-300 text-left" id="step-' + String(index) + '">' + doneButton + data.step + 
-             buildEdit(index) +
+             buildEdit(data.id) +
              buildDelete(index) +
             '</div>'
     }
     
-    ///   SUBGOAL BUTTON   ///
-    var subGoal_choosen = null;
-    function selectSubGoal(id){
+    ///   OBJECTIVE BUTTON   ///
+    var objective_choosen = null;
+    function selectObjective(id){
         ///  UI SELECTED EFFECT  ///
         $('#sub_goal_id-' + String(id)).addClass('bg-purple-400')
-        if (subGoal_choosen != null){
-            $('#sub_goal_id-' + String(subGoal_choosen)).removeClass('bg-purple-400')
+        if (objective_choosen != null){
+            $('#sub_goal_id-' + String(objective_choosen)).removeClass('bg-purple-400')
         }
-        subGoal_choosen = id
+        objective_choosen = id
+        // console.log(id)
 
         ///    AJAX FETCH     ///
         var xhttp = new XMLHttpRequest();
@@ -177,6 +185,7 @@ $coba = 5
                 // loop each data from fetching
                 responseObject.map((data, index) => {
                     
+                    console.log('the data', data.id)
                     // To build icon and step data
                     $('#steps').append(buildStep(data, index))
                     
@@ -196,7 +205,7 @@ $coba = 5
                 });
             }
         };
-        xhttp.open("GET", "/getSteps?subGoal=" + subGoal_choosen, true);
+        xhttp.open("GET", "/getSteps?objective=" + objective_choosen, true);
         xhttp.send();
     }
     
