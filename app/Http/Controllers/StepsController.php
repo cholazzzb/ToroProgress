@@ -104,7 +104,22 @@ class StepsController extends Controller
     }
 
     /**
-     * Fof AJAX 
+     * For Done Button
+     * 
+     */
+    public function doneHandler(Request $request, Step $step){
+        if ($step->isCompleted){
+            $step->isCompleted = false;
+        }
+        else{
+            $step->isCompleted = true;
+        }
+        $step->save();
+        return redirect(route('goals.show', $request->goal));
+    }
+
+    /**
+     * For AJAX 
      */
     public function getSteps(Request $request){
         if ($request->objective == null){

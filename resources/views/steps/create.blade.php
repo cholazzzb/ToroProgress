@@ -8,7 +8,7 @@
         @csrf
         <div class="justify-between bg-blue-600 p-2">
             <h1 class="text-xl p-2">Step</h1>
-            <input type="text" class="p-2 rounded" name="step" placeholder="New step" />
+            <input type="text" class="p-2 rounded w-1/2" name="step" placeholder="New step" />
             <div>
                 <input type="submit" class="m-3 py-2 px-4 hover:bg-gray-300 rounded" value="Save" />
             </div>

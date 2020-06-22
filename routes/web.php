@@ -28,6 +28,7 @@ Route::get('users', 'HomeController@getUsers')->name('get.users');
 Route::resource('/logbooks', 'LogBooksController');
 Route::resource('/objectives', 'ObjectivesController');
 Route::resource('/steps', 'StepsController');
+Route::put('/steps/done/{step}', 'StepsController@doneHandler')->name('step.isDone');
 
 
 // Fetch API

@@ -92,12 +92,20 @@
                         </a>
                     </h1>
 
+                    <!-- Delete Button -->
                     <div id="steps"></div>
                     @for($i=0; $i<10; $i++) <form style="display:none" id="form-delete-{{$i+1}}" method="post">
                         @csrf
                         @method('delete')
                         </form>
-                        @endfor
+                    @endfor
+
+                    <!-- Done Button -->
+                    @for($i=0; $i<10; $i++) <form style="display:none" id="form-done-{{$i+1}}" method="post">
+                        @csrf
+                        @method('put')
+                        </form>
+                    @endfor
                 </div>
 
                 <div class="bg-purple-300 mt-1">
@@ -108,7 +116,7 @@
 
                     @forelse ($objectives as $objective)
                     <div class="flex">
-                        <button class="w-full bg-teal-200 hover:bg-purple-200 p-2" id="sub_goal_id-{{$objective->id}}"
+                        <button class="w-full bg-teal-200 hover:bg-purple-200 p-2" id="objective_id-{{$objective->id}}"
                             onclick="selectObjective({{$objective->id}})">{{$objective->name}}</button>
                         <a href="{{route('objectives.edit', $objective->id)}}" class="p-2"> <i class="fas fa-edit hover:text-white"></i>
                         </a>
@@ -139,11 +147,20 @@
 <script>
     // catch php variale
     const goal_id = ({!! json_encode($goal->id) !!}) 
+    var first_objective_id
+    if(! ( {!! json_encode($objectives) !!}[0] === undefined)){
+        first_objective_id = ({!! json_encode($objectives) !!})[0].id
+    }
 
     ///   AJAX FETCH STEP    ///
     // variable and functionfor step edit button
-    const doneButton = '<i class="fas fa-check-square pr-2"></i>';
+    const doneButton = (id) => '<i class="fas fa-check-square cursor-pointer" id="done-button-' + String(id) + '"></i>';
     const editButton = '<i class="fas fa-edit pl-2"></i>';
+    const paddingStep = '<span class="pl-2"></span>'
+
+    function buildDone(id){
+        return doneButton(id)
+    }
 
     function buildEdit(id){
         return '<a href="/steps/' + String(id) + '/edit?goal=' + goal_id + '">' + editButton+ '</a>'
@@ -154,22 +171,23 @@
     }
 
     function buildStep(data, index){
-        return '<div class="bg-pink-300 text-left" id="step-' + String(index) + '">' + doneButton + data.step + 
+        if (data.isCompleted){
+            data.step = '<strike>' + data.step + '</strike>'
+        }
+
+        return '<div class="bg-pink-300 text-left" id="step-' + String(index) + '">' + buildDone(data.id) + paddingStep + data.step + 
              buildEdit(data.id) +
              buildDelete(index) +
             '</div>'
     }
     
     ///   OBJECTIVE BUTTON   ///
-    var objective_choosen = null;
-    function selectObjective(id){
+    function selectObjective(objective_choosen){
         ///  UI SELECTED EFFECT  ///
-        $('#sub_goal_id-' + String(id)).addClass('bg-purple-400')
+        $('#objective_id-' + String(objective_choosen)).addClass('bg-purple-400')
         if (objective_choosen != null){
-            $('#sub_goal_id-' + String(objective_choosen)).removeClass('bg-purple-400')
+            $('#objective_id-' + String(objective_choosen)).removeClass('bg-purple-400')
         }
-        objective_choosen = id
-        // console.log(id)
 
         ///    AJAX FETCH     ///
         var xhttp = new XMLHttpRequest();
@@ -185,28 +203,46 @@
                 // loop each data from fetching
                 responseObject.map((data, index) => {
                     
-                    console.log('the data', data.id)
                     // To build icon and step data
                     $('#steps').append(buildStep(data, index))
                     
                     // generate form id 
                     var deleteId = 'form-delete-' + String(index+1)
+                    var doneId = 'form-done-' + String(index+1) 
 
-                    // Change form action route
-                    $('#form-delete-'+String(index+1)).attr('action', '/steps/' + String(data.id));
+                    // Change delete form action route
+                    $('#form-delete-'+ String(index+1)).attr('action', '/steps/' + String(data.id));
+
+                    // Change done form action route
+                    $('#form-done-'+ String(index+1)).attr('action', '/steps/done/' + data.id.toString() + "?goal=" + goal_id.toString());
                     
-                    // Add onclick attributes
+                    // Add onclick attributes to delete button
                     $('#delete-button-' + String(index)).click(function(){
                         event.preventDefault();
                         if(confirm('Are you really want to delete?')){
                             document.getElementById(deleteId).submit()
                         }
                     })
+
+                    // Add onclick attributes to done button
+                    $('#done-button-' + String(data.id)).click(function(){
+                        event.preventDefault();
+                        console.log(doneId)
+                            document.getElementById(doneId).submit()
+                    })
+
+                    // Add Green color if done button is completed
+                    if(data.isCompleted){
+                        $('#done-button-' + String(data.id)).attr('class', 'fas fa-check-square cursor-pointer text-green-500 bg-green-900')
+                    }
                 });
             }
         };
         xhttp.open("GET", "/getSteps?objective=" + objective_choosen, true);
         xhttp.send();
+    }
+    if (first_objective_id != null){
+        selectObjective(first_objective_id)
     }
     
 </script>
