@@ -13,26 +13,35 @@
     </li>
 </ul>
 <div class="container mx-auto">
-    <div class="md:flex">
+    <div class="grid grid-cols-3 gap-4">
         @if (count($goals) > 0)
         @foreach ($goals as $goal)
-        <div class="flex-1 text-center m-1 bg-gray-100 shadow-md">
-            <a href="/goals/{{$goal->id}}">
-                <div class="hover:bg-teal-100">
-                    <h1 class="text-xl bg-green-100 p-3 hover:bg-teal-100 font-bold">{{$goal->name}}</h1>
-                    <p>{{$goal->description}}</p>
+
+        <div class="rounded overflow-hidden shadow-lg {{$goal->color}}">
+            <a href="/goals/{{$goal->id}}" style="text-decoration:none;">
+                <img class="w-full" src="" alt="Sunset in the mountains">
+                <div class="px-6 py-4">
+                    <div class="font-bold text-xl mb-2">{{$goal->name}}</div>
+                    <p class="text-gray-700 text-base">
+                        {{$goal->description}}
+                    </p>
+                </div>
+                <div class="px-6 py-4">
+                    <span
+                        class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">#tag</span>
                 </div>
             </a>
         </div>
         @endforeach
         @endif
-        <div class="flex-1 text-center m-1 bg-gray-100 shadow-md">
+        <div class="rounded overflow-hidden shadow-lg">
             <a href="{{route('goals.create')}}">
                 <div class="p-5 cursor-pointer hover:bg-teal-100">
                     <i class="fas fa-plus-square"></i>
                 </div>
             </a>
         </div>
+
     </div>
 </div>
 

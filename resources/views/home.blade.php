@@ -9,18 +9,26 @@
 
                 <div class="card-body">
                     @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
+                    <div class="alert alert-success" role="alert">
+                        {{ session('status') }}
+                    </div>
                     @endif
 
-                    <div class="text-2xl p-3 bg-green-100">
-                    <a href="{{route('goals.index')}}">
+                    <div class="text-2xl p-3 bg-green-100 m-1">
+                        <a href="{{route('goals.index')}}">
                             <div class="max-w-xs bg-green-200 text-center">
                                 Your Goals
                             </div>
-                                                </a>
+                        </a>
                     </div>
+                    <div class="text-2xl p-3 bg-green-100 m-1">
+                        <a href="{{route('tags.index')}}">
+                            <div class="max-w-xs bg-green-200 text-center">
+                                Your Tags
+                            </div>
+                        </a>
+                    </div>
+                    
                 </div>
             </div>
         </div>

@@ -87,7 +87,7 @@
                 <div class="bg-pink-500 mt-1">
                     <h1 class="bg-pink-100 p-1 text-2xl font-bold">
                         Steps <a href="{{route('steps.create')}}?goal={{$goal->id}}"
-                            onclick="location.href=this.href+'&objective='+objective_choosen;return false;">
+                            onclick="location.href=this.href+'&objective='+first_objective_id.toString()">
                             <i class="fas fa-plus-square pl-3"></i>
                         </a>
                     </h1>

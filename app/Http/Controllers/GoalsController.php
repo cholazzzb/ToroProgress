@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Datatables;
+use App\Tag;
 use App\Objective;
 use App\LogBook;
 use App\Goal;
@@ -42,7 +43,9 @@ class GoalsController extends Controller
      */
     public function create()
     {
-        return view("goals.create");
+        $id = auth()->user()->id;
+        $tags = Tag::where('user_id', $id)->get();
+        return view("goals.create")->with('tags', $tags);
     }
 
     /**
@@ -55,13 +58,15 @@ class GoalsController extends Controller
     {
         $this->validate($request, [
             'name' => 'required',
-            'description' => 'required'
+            'description' => 'required',
+            'color' => 'required'
         ]);
         
         // Create Goal
         $goal = new Goal;
         $goal->name = $request->input('name');
         $goal->description = $request->input('description');
+        $goal->color = $request->input('color');
         $goal->user_id = auth()->user()->id;
         $goal->save();
 
@@ -92,7 +97,10 @@ class GoalsController extends Controller
     public function edit($id)
     {
         $goal = Goal::find($id);
-        return view('goals.edit')->with('goal', $goal);
+        $user_id = auth()->user()->id;
+        $tags = Tag::where('user_id', $user_id)->get();
+             
+        return view('goals.edit', ['goal' => $goal, 'tags' => $tags]);
     }
 
     /**
@@ -104,7 +112,10 @@ class GoalsController extends Controller
      */
     public function update(Request $request, Goal $goal)
     {
-        $goal->update(['name' => $request->name, 'description' => $request->description]);
+        $goal->name = $request->name;
+        $goal->description = $request->description;
+        $goal->color = $request->color;
+        $goal->save();
         return redirect(route('goals.show', $goal->id));
     }
 

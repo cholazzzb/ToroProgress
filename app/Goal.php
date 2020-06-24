@@ -27,4 +27,9 @@ class Goal extends Model
      {
          return $this->hasMany('App\Objective');
      }
+
+     public function tags()
+     {
+         return $this->belongsToMany('App\Tag');
+     }
 }
