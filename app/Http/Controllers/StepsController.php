@@ -122,13 +122,15 @@ class StepsController extends Controller
      * For AJAX 
      */
     public function getSteps(Request $request){
-        if ($request->objective == null){
-            return 'you are not passing any parameter';
+        if(auth()->check()){
+            if ($request->objective == null){
+                return 'you are not passing any parameter';
+            }
+        
+            $objective_id = $request->objective;
+            $step = Step::where('objective_id', $objective_id)->take(10)->get();
+    
+            return $step->toJson();
         }
-
-        $objective_id = $request->objective;
-        $step = Step::where('objective_id', $objective_id)->take(10)->get();
-
-        return $step->toJson();
     }
 }

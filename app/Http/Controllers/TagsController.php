@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Goal;
 use App\Tag;
 
 class TagsController extends Controller
@@ -16,7 +17,21 @@ class TagsController extends Controller
     {
         $id = auth()->user()->id;
         $tags = Tag::where('user_id', $id)->get();
+        // return view('tags.index')->with('tags', $tags);
+
+        $coba = Tag::find(1);
+
+        // foreach($tags as $tag){
+        //     foreach($tag->goals as $goal){
+        //         echo 'goal_id'.$goal->pivot->goal_id.'  ';
+        //         echo 'tag_id'.$goal->pivot->tag_id;
+        //         echo '<br>';
+        //     };
+        // }
+
         return view('tags.index')->with('tags', $tags);
+        
+        // dd($coba);
     }
 
     /**
@@ -101,4 +116,26 @@ class TagsController extends Controller
         $tag->delete();
         return redirect(route('tags.index'));
     }
+
+    /**
+     * API to get goals from tag id
+     * 
+     * @param int $tag_id
+     * @return Goals Collection
+     */
+
+    public function getGoals_from_tag(Request $request){
+        if(auth()->check()){
+            if ($request->tag == null){
+                return 'you are not passing any parameter';
+            }
+            $tag = Tag::find($request->tag);
+            $goals_id = array();
+            foreach ($tag->goals as $goal) {
+                array_push($goals_id, $goal->pivot->goal_id);
+            }
+            $goals = Goal::findMany($goals_id);
+            return $goals->toJson();
+        }
+    }    
 }

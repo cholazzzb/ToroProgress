@@ -63,11 +63,13 @@ class GoalsController extends Controller
         ]);
         
         // Create Goal
-        $goal = new Goal;
-        $goal->name = $request->input('name');
-        $goal->description = $request->input('description');
-        $goal->color = $request->input('color');
-        $goal->user_id = auth()->user()->id;
+        $goal = Goal::create([
+            'name' => request('name'),
+            'description' => request('description'),
+            'color' => request('color'),
+            'user_id' => auth()->user()->id
+        ]);
+        $goal->tags()->attach($request->input('tag'));
         $goal->save();
 
         return redirect('/goals');
@@ -110,11 +112,13 @@ class GoalsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Goal $goal)
+    public function update(Request $request, $id)
     {
+        $goal = Goal::find($id);
         $goal->name = $request->name;
         $goal->description = $request->description;
         $goal->color = $request->color;
+        $goal->tags()->attach($request->input('tag'));
         $goal->save();
         return redirect(route('goals.show', $goal->id));
     }

@@ -31,8 +31,12 @@ Route::resource('/steps', 'StepsController');
 Route::resource('/tags', 'TagsController');
 Route::put('/steps/done/{step}', 'StepsController@doneHandler')->name('step.isDone');
 
+Route::get('/tailwind', function(){
+    return view('tailwind');
+});
+
 
 // Fetch API
 Route::get('/getSteps', 'StepsController@getSteps');
-
+Route::get('/getGoalsfromTag', 'TagsController@getGoals_from_tag');
 

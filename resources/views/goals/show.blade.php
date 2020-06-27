@@ -5,7 +5,7 @@
 <div class="mx-auto">
     <div class="md:flex">
         <div class="flex-1 text-center m-1 bg-gray-300 shadow-md">
-            <h1 class="text-xl bg-green-300 p-3 font-bold">
+            <h1 class="text-xl text-green-400 bg-gray-900 p-3 font-bold">
                 <a href="{{route('goals.index')}}">
                     <i class="fas fa-chevron-left hover:text-blue-900 hover:bg-green-400"></i>
                 </a>
@@ -23,37 +23,37 @@
                     @method('delete')
                 </form>
             </h1>
-            <p>Description &nbsp : &nbsp {{$goal->description}}</p>
+            <p class="bg-gray-900 text-green-400">Description &nbsp : &nbsp {{$goal->description}}</p>
         </div>
     </div>
 </div>
 
 <div class="mx-auto">
     <div class="md:flex">
-        <div class="flex-1 text-center m-1 bg-gray-100 shadow-xl border-2 border-green-600">
-            <h1 class="text-xl bg-green-200 p-3 font-bold">LOGBOOK
+        <div class="flex-1 text-center m-1 bg-gray-900 shadow-xl border-2 border-green-400">
+            <h1 class="text-xl text-green-400 bg-gray-900-200 p-3 font-bold">LOGBOOK
                 <a href="{{route('logbooks.create')}}?goal={{$goal->id}}">
                     <i class="fas fa-plus-square pl-3"></i>
                 </a>
             </h1>
             <table class="table-auto p-3 justify-center mt-1 w-full" id="users-table">
                 <thead>
-                    <tr class="border bg-green-200">
-                        <th class="px-2 py-2">Date</th>
-                        <th class="px-2 py-2">Topic</th>
-                        <th class="px-2 py-2">Details</th>
-                        <th class="px-2 py-2">Tags</th>
-                        <th class="px-2 py-2">Action</th>
+                    <tr class="border bg-gray-900">
+                        <th class="px-2 py-2 text-green-400">Date</th>
+                        <th class="px-2 py-2 text-green-400">Topic</th>
+                        <th class="px-2 py-2 text-green-400">Details</th>
+                        <th class="px-2 py-2 text-green-400">Tags</th>
+                        <th class="px-2 py-2 text-green-400">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     @if (count($logBooks) > 0)
                     @foreach ($logBooks as $logBook)
                     <tr>
-                        <td class="px-2 py-2 text-sm">{{$logBook->date}}</td>
-                        <td class="px-2 py-2 text-sm">{{$logBook->topic}}</td>
-                        <td class="px-2 py-2 text-sm">{{$logBook->details}}</td>
-                        <td class="px-2 py-2 text-sm">{{$logBook->tags}}</td>
+                        <td class="px-2 py-2 text-sm text-green-400">{{$logBook->date}}</td>
+                        <td class="px-2 py-2 text-sm text-green-400">{{$logBook->topic}}</td>
+                        <td class="px-2 py-2 text-sm text-green-400">{{$logBook->details}}</td>
+                        <td class="px-2 py-2 text-sm text-green-400">{{$logBook->tags}}</td>
                         <td>
                             <a href="{{route('logbooks.edit', $logBook->id)}}">
                                 <i class="fas fa-edit px-1 cursor-pointer hover:bg-yellow-300"></i>
@@ -72,22 +72,23 @@
                     </tr>
                     @endforeach
                     @else
-                    There is no LogBook yet
+                    <p class="text-green-400">
+                        There is no LogBook yet
+                    </p>
                     @endif
                 </tbody>
             </table>
         </div>
-        <div class="flex-1 text-center m-1 bg-gray-100 shadow-xl border-2 border-purple-600">
-            <h1 class="text-xl bg-purple-200 p-3 font-bold ">OBJECTIVES
+        <div class="flex-1 text-center m-1 bg-gray-100 border-2 border-purple-600">
+            <h1 class="text-xl text-green-400 bg-gray-900 p-3 font-bold ">OBJECTIVES
                 <a href="{{route('objectives.create')}}?goal={{$goal->id}}">
                     <i class="fas fa-plus-square pl-3"></i>
                 </a>
             </h1>
-            <div class="grid grid-cols-2">
-                <div class="bg-pink-500 mt-1">
-                    <h1 class="bg-pink-100 p-1 text-2xl font-bold">
-                        Steps <a href="{{route('steps.create')}}?goal={{$goal->id}}"
-                            onclick="location.href=this.href+'&objective='+first_objective_id.toString()">
+            <div class="bg-gray-900 grid grid-cols-2">
+                <div class="bg-gray-900 mt-1">
+                    <h1 class="bg-gray-900 p-1 text-2xl text-green-400 font-bold">
+                        Steps <a id="link-create-step">
                             <i class="fas fa-plus-square pl-3"></i>
                         </a>
                     </h1>
@@ -108,23 +109,23 @@
                     @endfor
                 </div>
 
-                <div class="bg-purple-300 mt-1">
+                <div class="bg-gray-900 mt-1">
                     @if (count($objectives) > 0)
-                    <h1 class="bg-blue-300 p-1 text-2xl font-bold">
+                    <h1 class="p-1 text-2xl text-green-400 font-bold">
                         Objectives
                     </h1>
 
                     @forelse ($objectives as $objective)
                     <div class="flex">
-                        <button class="w-full bg-teal-200 hover:bg-purple-200 p-2" id="objective_id-{{$objective->id}}"
+                        <button class="w-full bg-gray-900 text-green-400 hover:bg-purple-200 p-2" id="objective_id-{{$objective->id}}"
                             onclick="selectObjective({{$objective->id}})">{{$objective->name}}</button>
-                        <a href="{{route('objectives.edit', $objective->id)}}" class="p-2"> <i class="fas fa-edit hover:text-white"></i>
+                        <a href="{{route('objectives.edit', $objective->id)}}" class="p-2 text-gray-700"> <i class="fas fa-edit hover:text-green-400"></i>
                         </a>
                     <form style="display:none" action="{{route('objectives.destroy', $objective->id)}}" id="objective-delete-{{$objective->id}}" method="post" action="{{route('objectives.destroy', $objective->id)}}">
                             @csrf
                             @method('delete')
                         </form>
-                        <div class="p-2" onclick="event.preventDefault();
+                        <div class="p-2 text-gray-700 hover:text-orange-500" onclick="event.preventDefault();
                         if(confirm('Are you sure to delete {{$objective->name}} ?')){
                         document.getElementById('objective-delete-{{$objective->id}}').submit()
                         }"> <i class="fas fa-trash hover:text-red-600 cursor-pointer"></i>
@@ -133,7 +134,7 @@
                     @endforeach
 
                     @else
-                    <h1 class="bg-yellow-100 p-1">
+                    <h1 class="bg-gray-900 text-green-400 p-1">
                         There is no OBJECTIVES. Create One now !
                     </h1>
                     @endif
@@ -175,7 +176,7 @@
             data.step = '<strike>' + data.step + '</strike>'
         }
 
-        return '<div class="bg-pink-300 text-left" id="step-' + String(index) + '">' + buildDone(data.id) + paddingStep + data.step + 
+        return '<div class="bg-gray-900 border-2 border-purple-600 text-left text-green-400" id="step-' + String(index) + '">' + buildDone(data.id) + paddingStep + data.step + 
              buildEdit(data.id) +
              buildDelete(index) +
             '</div>'
@@ -183,6 +184,10 @@
     
     ///   OBJECTIVE BUTTON   ///
     function selectObjective(objective_choosen){
+        
+        // To change routing query for create step
+        $('#link-create-step').attr("href", "/steps/create?goal=" + goal_id.toString() + "&objective=" + objective_choosen.toString())
+        
         ///  UI SELECTED EFFECT  ///
         $('#objective_id-' + String(objective_choosen)).addClass('bg-purple-400')
         if (objective_choosen != null){

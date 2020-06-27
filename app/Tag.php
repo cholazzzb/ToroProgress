@@ -14,6 +14,6 @@ class Tag extends Model
     
     public function goals()
     {
-        return $this->belongsToMany('App\Goal', 'goals_tabs', 'tag_id', 'goal_id');
+        return $this->belongsToMany('App\Goal');
     }
 }
